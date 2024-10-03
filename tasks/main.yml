@@ -1,0 +1,22 @@
+---
+
+- name: ACTIVEMQ | Install
+  include: install.yml
+  tags:
+    - activemq_install
+
+- name: activemq | Agent config
+  import_tasks: agent.yml
+  tags:
+    - activemq_agents_config
+  when: activemq_agents_config is defined
+
+- name: ACTIVEMQ | Configure
+  include: config.yml
+  tags:
+    - activemq_configure
+
+- name: ACTIVEMQ | Service
+  include: service.yml
+  tags:
+    - activemq_service

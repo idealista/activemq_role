@@ -1,0 +1,17 @@
+---
+
+- name: ACTIVEMQ | Copy Daemon script
+  template:
+    src: activemq.service.j2
+    dest: /etc/systemd/system/activemq.service
+    mode: 0644
+    owner: root
+    group: root
+  notify: restart activemq
+
+- name: ACTIVEMQ | Configuring service
+  systemd:
+    name: activemq
+    state: "{{ activemq_service_state }}"
+    enabled: "{{ activemq_service_enabled }}"
+    daemon_reload: yes

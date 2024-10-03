@@ -1,0 +1,27 @@
+{{ ansible_managed | comment }}
+[Unit]
+Description=activemq
+Documentation={{ activemq_documentation_link }}
+Requires=network-online.target
+After=network-online.target
+
+[Service]
+PrivateTmp={{ activemq_private_tmp }}
+User={{ activemq_user }}
+Group={{ activemq_group }}
+RuntimeDirectory=activemq
+PIDFile={{activemq_root_path}}/data/activemq.pid
+WorkingDirectory={{activemq_bin_path}}
+LimitNOFILE={{ activemq_max_files }}
+
+ExecStart={{ activemq_bin_path }}/{{ activemq_exec_name }} start
+ExecStop={{ activemq_bin_path }}/{{ activemq_exec_name }} stop
+
+StandardOutput={{ activemq_log_output }}
+StandardError={{ activemq_log_output }}
+ExecReload=/bin/kill -HUP $MAINPID
+KillSignal=SIGTERM
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
