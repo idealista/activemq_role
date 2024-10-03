@@ -2,4 +2,4 @@
 - name: Converge
   hosts: activemq_group
   roles:
-    - role: activemq-role
+    - role: activemq_role
