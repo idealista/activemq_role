@@ -1,0 +1,57 @@
+---
+
+- name: ACTIVEMQ | Ensure activemq group
+  group:
+    name: "{{ activemq_group }}"
+    system: yes
+    state: present
+
+- name: ACTIVEMQ | Ensure activemq user
+  user:
+    name: "{{ activemq_user }}"
+    group: "{{ activemq_group }}"
+    system: yes
+    shell: /usr/sbin/nologin
+    createhome: no
+
+- name: ACTIVEMQ | Ensure skeleton paths
+  file:
+    dest: "{{ item }}"
+
+    owner: "{{ activemq_user }}"
+    group: "{{ activemq_group }}"
+
+    state: directory
+  with_items:
+    - "{{ activemq_skeleton_paths }}"
+
+- name: ACTIVEMQ | Ensure skeleton log paths
+  file:
+    dest: "{{ activemq_logs_path }}"
+    owner: "{{ activemq_user }}"
+    group: "{{ activemq_group }}"
+    state: directory
+  when: activemq_logs_path is defined
+
+- name: ACTIVEMQ | Check activemq version
+  command: "{{ activemq_bin_path }}/{{ activemq_exec_name }} --version"
+  register: activemq_check
+  changed_when: false
+  ignore_errors: true
+
+- name: ACTIVEMQ | Download package
+  get_url:
+    url: "{{ activemq_url }}"
+    dest: "{{ activemq_package_path }}"
+  when: activemq_force_reinstall or activemq_check is failed or activemq_version not in activemq_check.stdout
+
+- name: ACTIVEMQ | Extract downloaded package
+  unarchive:
+    extra_opts: ['--strip-components=1']
+    src: "{{ activemq_package_path }}"
+    dest: "{{ activemq_root_path }}"
+    owner: "{{ activemq_user }}"
+    group: "{{ activemq_group }}"
+    remote_src: True
+    mode: 0750
+  when: activemq_force_reinstall or activemq_check is failed or activemq_version not in activemq_check.stdout

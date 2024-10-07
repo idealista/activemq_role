@@ -1,0 +1,5 @@
+---
+- name: Converge
+  hosts: activemq_group
+  roles:
+    - role: activemq_role

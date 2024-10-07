@@ -1,0 +1,25 @@
+---
+
+file:
+  /opt/activemq:
+    owner: activemq
+    group: activemq
+    exists: true
+    filetype: directory
+
+service:
+  activemq:
+    enabled: true
+    running: true
+process:
+  java:
+    running: true
+user:
+  activemq:
+    exists: true
+    groups:
+      - activemq
+    shell: /usr/sbin/nologin
+group:
+  activemq:
+    exists: true

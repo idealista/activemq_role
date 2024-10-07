@@ -1,0 +1,7 @@
+---
+
+- name: restart activemq
+  systemd:
+    name: activemq
+    state: restarted
+  when: activemq_service_state != 'stopped'

@@ -1,0 +1,26 @@
+---
+
+- name: ACTIVEMQ | Copy config
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: 0640
+    owner: "{{ activemq_user }}"
+    group: "{{ activemq_group }}"
+  with_items:
+    - { src: "log4j.properties.j2", dest: "{{ activemq_conf_path }}/log4j.properties" }
+    - { src: "env.j2", dest: "{{ activemq_bin_path }}/env" }
+  notify: restart activemq
+
+
+- name: ACTIVEMQ | Copy extra activemq config templates (provided by playbooks)
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ activemq_conf_path }}/{{ item.path | splitext | first }}"  # This is to remove .j2 extension
+    owner: "{{ activemq_user }}"
+    group: "{{ activemq_group }}"
+    mode: 0640
+  with_filetree:
+    - "{{ activemq_extra_conf_template_path }}/"
+  when: item.state == "file"
+  notify: restart activemq

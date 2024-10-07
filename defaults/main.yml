@@ -1,0 +1,76 @@
+---
+
+## General
+# Version
+activemq_version: 5.15.14
+
+# Package URL
+activemq_release_name: "apache-activemq_{{ activemq_version }}"
+activemq_package: "{{ activemq_release_name }}.tar.gz"
+activemq_url: "http://archive.apache.org/dist/activemq/{{ activemq_version }}/apache-activemq-{{ activemq_version }}-bin.tar.gz"
+
+# Package paths
+activemq_download_path: /usr/src
+activemq_package_path: "{{ activemq_download_path }}/{{ activemq_package }}"
+activemq_src_bin: "{{ activemq_download_path }}/{{ activemq_release_name }}/bin/{{ activemq_exec_name }}"
+
+# Set true to force the download and installation of the binary
+activemq_force_reinstall: false
+
+# Installation path
+activemq_root_path: /opt/activemq
+activemq_conf_path: "{{ activemq_root_path }}/conf"
+activemq_bin_path: "{{ activemq_root_path }}/bin"
+activemq_skeleton_paths:
+  - "{{ activemq_bin_path }}"
+activemq_exec_name: activemq
+
+## Service options
+# Documentation
+activemq_documentation_link: http://activemq.apache.org/components/classic/
+
+# Owner
+activemq_user: activemq
+activemq_group: activemq
+
+# Maximum number of files limit
+activemq_max_files: 32768
+
+activemq_vm_opts:
+  - -Xms256M
+  - -Xmx256M
+
+activemq_use_jmx: true
+activemq_jmx_port: 1099
+
+activemq_service_enabled: True
+activemq_service_state: started
+
+# Logs
+activemq_log_output: "{% if activemq_log_file is defined %} file:{{ activemq_log_file }} {% else %} journal {% endif %}"
+activemq_default_log_logging_path: "{{ activemq_root_path }}/data"
+activemq_logs_path: "/var/log/activemq"
+
+activemq_private_tmp: true
+activemq_extra_conf_template_path: "{{ playbook_dir }}/templates/activemq/conf"
+
+## Agent configuration (optional)
+activemq_agents_required_libs:
+  - unzip
+  - tar
+  - apt-transport-https
+
+activemq_agents_force_reinstall: false
+
+# activemq_agents_config:
+#   - name: "agent_name"
+#     download_url: "download_url"
+#     version: "x.x.x"
+#     catalina_opts:
+#       - '-javaagent:{{ activemq_root_path }}/agent_name/agent_file'
+#     configuration_files:
+#       - "configuration_file.yml"
+#     params: {
+#       application_name: "application_name",
+#       license_key: "license_key"
+#     }
